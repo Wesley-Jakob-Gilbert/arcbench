@@ -1,0 +1,113 @@
+benchmarks:
+  - id: llama31_8b_q4km
+    label: "Llama 3.1 8B — Q4_K_M"
+    category: ml
+    family: llama_cpp
+    description: >
+      Standard comparable run. Fits fully in 32GB VRAM. Repo-compatible preset
+      matching the Intel-Arc-GPU-Benchmarks baseline (pp512 + tg128).
+    model:
+      filename: "Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+      size_gib: 4.58
+      url: "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
+      sha256: ""
+      license: open
+    executable: llama-bench
+    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-o", "jsonl"]
+    expected_vram_gib: 5.5
+    repo_compatible: true
+    tags: [quick, recommended, 8b]
+
+  - id: llama31_8b_q5km
+    label: "Llama 3.1 8B — Q5_K_M"
+    category: ml
+    family: llama_cpp
+    description: >
+      Higher quality than Q4_K_M, modest VRAM increase. Repo-compatible.
+    model:
+      filename: "Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf"
+      size_gib: 5.33
+      url: "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q5_K_M.gguf"
+      sha256: ""
+      license: open
+    executable: llama-bench
+    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-o", "jsonl"]
+    expected_vram_gib: 6.1
+    repo_compatible: true
+    tags: [recommended, 8b]
+
+  - id: llama31_8b_q8
+    label: "Llama 3.1 8B — Q8_0"
+    category: ml
+    family: llama_cpp
+    description: >
+      Near lossless quality. Shows memory bandwidth wall: generation drops ~35%
+      vs Q4_K_M despite nearly identical prompt throughput.
+    model:
+      filename: "Meta-Llama-3.1-8B-Instruct-Q8_0.gguf"
+      size_gib: 7.95
+      url: "https://huggingface.co/bartowski/Meta-Llama-3.1-8B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-8B-Instruct-Q8_0.gguf"
+      sha256: ""
+      license: open
+    executable: llama-bench
+    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-o", "jsonl"]
+    expected_vram_gib: 9.0
+    repo_compatible: true
+    tags: [recommended, 8b, memory-wall]
+
+  - id: llama31_70b_q2k
+    label: "Llama 3.1 70B — Q2_K (all GPU)"
+    category: ml
+    family: llama_cpp
+    description: >
+      Largest model that fits fully in 32GB VRAM. Shows fully GPU-accelerated
+      70B inference. Download is ~25GB — plan accordingly.
+    model:
+      filename: "Meta-Llama-3.1-70B-Instruct-Q2_K.gguf"
+      size_gib: 24.56
+      url: "https://huggingface.co/bartowski/Meta-Llama-3.1-70B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-70B-Instruct-Q2_K.gguf"
+      sha256: ""
+      license: open
+    executable: llama-bench
+    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-o", "jsonl"]
+    expected_vram_gib: 27.0
+    repo_compatible: true
+    tags: [70b, all-gpu, large]
+
+  - id: llama31_70b_iq3xs
+    label: "Llama 3.1 70B — IQ3_XS (all GPU)"
+    category: ml
+    family: llama_cpp
+    description: >
+      3.3 bpw importance-matrix quant. Better quality than Q2_K, still fits
+      in 32GB VRAM at 27.3 GiB. Slightly lower prompt throughput than Q2_K.
+    model:
+      filename: "Meta-Llama-3.1-70B-Instruct-IQ3_XS.gguf"
+      size_gib: 27.29
+      url: "https://huggingface.co/bartowski/Meta-Llama-3.1-70B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-70B-Instruct-IQ3_XS.gguf"
+      sha256: ""
+      license: open
+    executable: llama-bench
+    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-o", "jsonl"]
+    expected_vram_gib: 30.0
+    repo_compatible: true
+    tags: [70b, all-gpu, large]
+
+  - id: llama31_70b_q4km_hybrid
+    label: "Llama 3.1 70B — Q4_K_M (hybrid CPU+GPU)"
+    category: ml
+    family: llama_cpp
+    description: >
+      Demonstrates the VRAM memory wall. 39.6 GiB model exceeds 32GB VRAM —
+      60 of 80 layers on GPU, 20 on CPU. Shows CPU offload throughput penalty.
+    model:
+      filename: "Meta-Llama-3.1-70B-Instruct-Q4_K_M.gguf"
+      size_gib: 39.59
+      url: "https://huggingface.co/bartowski/Meta-Llama-3.1-70B-Instruct-GGUF/resolve/main/Meta-Llama-3.1-70B-Instruct-Q4_K_M.gguf"
+      sha256: ""
+      license: open
+    executable: llama-bench
+    args: ["-m", "{model}", "-ngl", "60", "-p", "512", "-n", "128", "-o", "jsonl"]
+    expected_vram_gib: 32.0
+    repo_compatible: true
+    tags: [70b, hybrid, memory-wall, large]
