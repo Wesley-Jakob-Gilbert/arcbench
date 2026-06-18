@@ -13,10 +13,15 @@ class CategoryCard(Button):
     """A benchmark category card button."""
 
     def __init__(self, title: str, subtitle: str, category: str, available: bool = True) -> None:
-        label = f"{title}  {'(' + subtitle + ')' if subtitle else ''}"
-        super().__init__(label, id=f"cat-{category}", disabled=not available)
+        super().__init__(id=f"cat-{category}", disabled=not available)
+        self._title = title
+        self._subtitle = subtitle
         self._category = category
         self._available = available
+
+    def compose(self) -> ComposeResult:
+        yield Static(self._title, classes="card-title")
+        yield Static(self._subtitle, classes="card-subtitle")
 
 
 class HomeScreen(Screen):
@@ -65,6 +70,7 @@ class HomeScreen(Screen):
         background: #171A1D;
         color: #00A3FF;
         text-align: left;
+        align: left top;
     }
 
     CategoryCard:hover {
@@ -75,6 +81,25 @@ class HomeScreen(Screen):
     CategoryCard:disabled {
         color: #3A3F45;
         border: round #1E2328;
+    }
+
+    CategoryCard > .card-title {
+        color: #00A3FF;
+        text-style: bold;
+        width: 100%;
+    }
+
+    CategoryCard > .card-subtitle {
+        color: #8B949E;
+        width: 100%;
+    }
+
+    CategoryCard:disabled > .card-title {
+        color: #3A3F45;
+    }
+
+    CategoryCard:disabled > .card-subtitle {
+        color: #3A3F45;
     }
 
     #recent-panel {

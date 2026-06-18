@@ -44,8 +44,9 @@ class CategoryScreen(Screen):
     """Benchmark selection for a given category."""
 
     BINDINGS = [
-        Binding("escape,b", "go_back", "Back", show=True),
-        Binding("enter,r", "run_selected", "Run", show=True),
+        Binding("escape", "go_back", "Back", show=True),
+        Binding("b", "go_back", "Back", show=False),
+        Binding("r", "run_selected", "Run", show=True),
         Binding("?", "app.help", "Help", show=True),
     ]
 
@@ -155,6 +156,7 @@ class CategoryScreen(Screen):
                     *[BenchmarkListItem(p) for p in self._presets],
                     id="benchmark-list",
                 ),
+                Button("← Back", id="btn-back", variant="default"),
                 id="list-panel",
             ),
             Vertical(
@@ -212,6 +214,8 @@ class CategoryScreen(Screen):
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-run" and self._selected:
             self.action_run_selected()
+        elif event.button.id == "btn-back":
+            self.action_go_back()
 
     def action_run_selected(self) -> None:
         if not self._selected:
