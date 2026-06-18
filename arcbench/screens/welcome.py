@@ -28,8 +28,8 @@ class CheckRow(Static):
     }
     """
 
-    def __init__(self, label: str, status: str = "pending", detail: str = "") -> None:
-        super().__init__()
+    def __init__(self, label: str, status: str = "pending", detail: str = "", **kwargs) -> None:
+        super().__init__(**kwargs)
         self._label = label
         self._status = status
         self._detail = detail
