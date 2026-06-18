@@ -13,7 +13,7 @@ class CategoryCard(Button):
     """A benchmark category card button."""
 
     def __init__(self, title: str, subtitle: str, category: str, available: bool = True) -> None:
-        label = f"[bold]{title}[/bold]\n[dim]{subtitle}[/dim]"
+        label = f"{title}  {'(' + subtitle + ')' if subtitle else ''}"
         super().__init__(label, id=f"cat-{category}", disabled=not available)
         self._category = category
         self._available = available
