@@ -31,16 +31,48 @@ Built for Intel Arc GPU owners on Linux who want comparable, shareable results w
 
 ### Install
 
-```bash
-pipx install arcbench
-arcbench
-```
+**Option A — `uv` (recommended, fastest)**
 
-Or from source:
+`uv` manages its own isolated environment automatically. No manual venv activation needed.
 
 ```bash
 git clone https://github.com/Wesley-Jakob-Gilbert/arcbench
 cd arcbench
+uv venv              # creates .venv/ in the project directory
+source .venv/bin/activate
+uv pip install -e .
+arcbench
+```
+
+> **Important:** `uv pip install` installs into whichever environment is currently active.
+> If you run it without activating the venv first, the package lands in your system Python
+> and the `arcbench` command may not be on your PATH (or may conflict with system packages).
+> Always `source .venv/bin/activate` before installing or running.
+
+To re-enter the environment in a new shell:
+
+```bash
+cd arcbench
+source .venv/bin/activate
+arcbench
+```
+
+**Option B — `pipx` (install once, run anywhere)**
+
+`pipx` creates and manages the venv for you — no activation step ever needed.
+
+```bash
+pipx install git+https://github.com/Wesley-Jakob-Gilbert/arcbench
+arcbench
+```
+
+**Option C — standard `pip` from source**
+
+```bash
+git clone https://github.com/Wesley-Jakob-Gilbert/arcbench
+cd arcbench
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -e .
 arcbench
 ```
