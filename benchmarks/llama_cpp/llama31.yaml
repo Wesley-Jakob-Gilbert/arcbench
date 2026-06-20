@@ -41,8 +41,9 @@ benchmarks:
     category: ml
     family: llama_cpp
     description: >
-      Near lossless quality. Shows memory bandwidth wall: generation drops ~35%
-      vs Q4_K_M despite nearly identical prompt throughput.
+      Near lossless quality. Re-run after llama.cpp PR #21527 (merged b9672+) which
+      fixes a 3.1x Q8_0 SYCL regression on Arc — expect ~170 t/s gen vs old 56 t/s.
+      Baseline: pp512=1053.28, tg128=56.01 (pre-fix, b9672).
     model:
       filename: "Meta-Llama-3.1-8B-Instruct-Q8_0.gguf"
       size_gib: 7.95
@@ -50,10 +51,10 @@ benchmarks:
       sha256: ""
       license: open
     executable: llama-bench
-    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-o", "jsonl"]
+    args: ["-m", "{model}", "-ngl", "999", "-p", "512", "-n", "128", "-r", "3", "-o", "jsonl"]
     expected_vram_gib: 9.0
     repo_compatible: true
-    tags: [recommended, 8b, memory-wall]
+    tags: [recommended, 8b, memory-wall, re-run, pr21527]
 
   - id: llama31_70b_q2k
     label: "Llama 3.1 70B — Q2_K (all GPU)"

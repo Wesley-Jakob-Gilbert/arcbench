@@ -167,11 +167,8 @@ class CategoryScreen(Screen):
         )
         yield Footer()
 
-    def _build_detail_widgets(self) -> list:
-        if not self._selected:
-            return [Static("[#8B949E]Select a benchmark to see details.[/#8B949E]")]
-
-        p = self._selected
+    def _detail_content(self, p: BenchmarkPreset) -> tuple[str, str, str, str]:
+        """Return (title_markup, description, meta, command) for a preset."""
         model_info = ""
         cmd_preview = ""
         if p.model:
@@ -189,27 +186,42 @@ class CategoryScreen(Screen):
             "[#6DAA45]repo-compatible[/#6DAA45]" if p.repo_compatible
             else "[#D19900]custom[/#D19900]"
         )
+        title = f"[bold #00A3FF]{p.label}[/bold #00A3FF]  {repo_badge}"
+        command = f"[#8B949E]Command:[/#8B949E]\n[#6DAA45]{cmd_preview}[/#6DAA45]"
+        return title, p.description.strip(), model_info, command
 
+    def _build_detail_widgets(self) -> list:
+        """Build detail widgets for initial compose() only."""
+        if not self._selected:
+            return [Static("[#8B949E]Select a benchmark to see details.[/#8B949E]", id="detail-title")]
+
+        title, desc, meta, cmd = self._detail_content(self._selected)
         return [
-            Static(f"[bold #00A3FF]{p.label}[/bold #00A3FF]  {repo_badge}", id="detail-title"),
-            Static(p.description.strip(), id="detail-description"),
-            Static(model_info, id="detail-meta"),
-            Static(f"[#8B949E]Command:[/#8B949E]\n[#6DAA45]{cmd_preview}[/#6DAA45]", id="detail-command"),
+            Static(title, id="detail-title"),
+            Static(desc, id="detail-description"),
+            Static(meta, id="detail-meta"),
+            Static(cmd, id="detail-command"),
             Container(
                 Button("▶  Run benchmark", id="btn-run"),
                 id="detail-actions",
             ),
         ]
 
+    def _refresh_detail(self) -> None:
+        """Update detail panel text in-place — no widget remounting, no duplicate IDs."""
+        if not self._selected:
+            return
+        title, desc, meta, cmd = self._detail_content(self._selected)
+        self.query_one("#detail-title", Static).update(title)
+        self.query_one("#detail-description", Static).update(desc)
+        self.query_one("#detail-meta", Static).update(meta)
+        self.query_one("#detail-command", Static).update(cmd)
+
     def on_list_view_selected(self, event: ListView.Selected) -> None:
         item = event.item
         if isinstance(item, BenchmarkListItem):
             self._selected = item.preset
-            # Refresh detail panel
-            detail = self.query_one("#detail-panel", Vertical)
-            detail.remove_children()
-            for widget in self._build_detail_widgets():
-                detail.mount(widget)
+            self._refresh_detail()
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         if event.button.id == "btn-run" and self._selected:
